@@ -40,10 +40,10 @@ class LeaderboardCommand extends Command {
       if (err) throw err;
       // Sort
       const dbo = db.db("msgs");
-      dbo.collection(message.guildId).find().sort({count: 1}).toArray(async (err,res) => {
+      dbo.collection(message.guildId).find().sort({count: -1}).toArray(async (err,res) => {
         if (err) throw err;
         if (res === undefined) return message.channel.send("No messages sent in the server yet!");
-        res.shift();
+        if (res[0].id === "settings") res.shift();
 
         let out = "";
         for (let i = 0; i < res.length && i < 10; i++) {

@@ -50,9 +50,9 @@ class CountCommand extends Command {
       const dbo = db.db("msgs");
       dbo.collection(message.guildId).findOne({id: user.id},(err,res) => {
         if (err) throw err;
-        if (res === undefined && user.id === message.author.id)
+        if ((res === undefined || res === null) && user.id === message.author.id)
           return message.channel.send(`Looks like I haven't counted any of your messages yet. Wait a bit and/or send more messages, then try again.`);
-        if (res === undefined)
+        if (res === undefined || res === null)
           return message.channel.send(`Looks like they haven't sent any messages yet. If they have, wait a bit, then try again.`);
         const embed = new MessageEmbed()
           .setTitle(`Messages sent by ${user.username}`)

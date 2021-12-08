@@ -85,10 +85,10 @@ async function main() {
       const col = dbo.collection(message.guild.id);
       col.findOne({id: message.author.id}, (err, res) => {
         if (err) throw err;
-        let out = {};
-        if (res === undefined) out = {$set: {id: message.author.id, count: 1}};
-        else out = {$set: {id: message.author.id, count: res.count += 1}};
-        col.updateOne({id: message.author.id}, out);
+        if (res === undefined || res === null)
+          col.insertOne({id: message.author.id, count: 1});
+        else
+          col.updateOne({id: message.author.id},{$set: {id: message.author.id, count: res.count += 1}});
       });
     })
 

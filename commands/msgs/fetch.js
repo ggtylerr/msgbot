@@ -22,8 +22,7 @@
  */
 
 const { Command, UserPermissionsPrecondition } = require('@sapphire/framework');
-const { MessageEmbed, Collection} = require('discord.js');
-const strip = require('common-tags').stripIndents;
+const {Collection} = require('discord.js');
 const { MongoClient } = require('mongodb');
 
 class FetchCommand extends Command {
@@ -77,8 +76,12 @@ class FetchCommand extends Command {
         }
       }
       // Delete pre-existing collection, then add everything in
-      await col.drop();
-      msgs.unshift(s);
+      try {
+        await col.drop();
+      } catch (e) {
+        // Collection didn't exist
+      }
+      if (s !== null) msgs.unshift(s);
       const col2 = dbo.collection(message.guildId);
       col2.insertMany(msgs, (err) => {
         if (err) throw err;
