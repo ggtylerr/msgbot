@@ -1,0 +1,103 @@
+/**
+ * msg bot configuration file
+ *
+ * Copyright (C) 2021 Tyler Flowers (ggtylerr)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ~~~developed by ggtylerr and co.~~~
+ */
+
+/**
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ *
+ *         This can now be configured during initial launch,
+ *                      or through command line:
+ *
+ *                         index.js --config
+ *
+ *        API keys are not stored here, and is located in .env
+ *            This file can be generated through CLI, too:
+ *
+ *                         index.js --genenv
+ *
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ */
+
+/**
+ * In case someone asks...
+ * "NOOOOOO WHY ARE YOU USING HJSON AND NOT YAML OR REGULAR JSON?"
+ *
+ * ...JSON is much easier and nicer to implement in JS.
+ * With regular JSON, though, you can't have licensing info and
+ * comments without a hacky alternative, and the way this config file
+ * is used won't allow said alternative. The syntax is also pretty
+ * strict, even if this file is not entirely meant to be edited.
+ *
+ * HJSON is a nice solution to this, and is why it's being used.
+ *
+ * Also: https://hjson.github.io/faq#but-json-
+ */
+
+{
+  DefaultPrefix:
+  {
+    val: ;
+    def: ;
+    title: Default Prefix
+    desc: The default prefix used in commands. Doesn't have to be one character. Doesn't affect slash commands. If you want to specify multiple, go into config.hjson, scroll down to DefaultPrefix, and type it out as an array, like so: val: [1239503, 138501512]
+    type: String
+  }
+  HostWeb:
+  {
+    val: false
+    def: false
+    title: Web Server Hosting
+    desc: If enabled, a web server will be set up for use in status monitors (like Uptime Robot or status.io). This is NOT a web dashboard.
+    type: Boolean
+  }
+  OwnerID:
+  {
+    val: ""
+    def: ""
+    title: Owner ID
+    desc: Your ID. You can find out how to get it here: https://wiki.discord.id/ If you want to specify multiple, go into config.hjson, scroll down to OwnerID, and type it out as an array, like so: val: [1239503, 138501512]
+  }
+  LogLevel:
+  {
+    val: Info
+    def: Info
+    title: Log Level
+    desc: Determines what kind of logs you want. Ordered from lowest level to highest, i.e. most amount of logs to least amount.
+    type: List
+    list:
+    [
+      Trace
+      Debug
+      Info
+      Warn
+      Error
+      Fatal
+      None
+    ]
+  }
+  MongoPort:
+  {
+    val: 27017
+    def: 27017
+    title: MongoDB Port
+    desc: Specify the port where your DB should be in.
+    type: Number
+  }
+}
