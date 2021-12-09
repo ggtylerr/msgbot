@@ -81,14 +81,28 @@ async function main() {
     client.on('messageCreate', message => {
       // Return if bot or DM
       if (message.author.bot || message.guild === undefined || message.guild === null) return;
-      // Update count
+      // Check if message is not after the configured before date
       const col = dbo.collection(message.guild.id);
-      col.findOne({id: message.author.id}, (err, res) => {
+      col.findOne({id: "settings"}, (err, res) => {
         if (err) throw err;
-        if (res === undefined || res === null)
-          col.insertOne({id: message.author.id, count: 1});
-        else
-          col.updateOne({id: message.author.id},{$set: {id: message.author.id, count: res.count += 1}});
+        let before = 999999999999999999999
+        if (res !== null && res !== undefined) {
+          if (res.settings.before !== undefined) {
+            if (res.settings.before.val !== "") {
+              before = parseInt(res.settings.before.val);
+            }
+          }
+        }
+        if (before > (message.createdTimestamp/1000)) {
+          // Update count
+          col.findOne({id: message.author.id}, (err, res) => {
+            if (err) throw err;
+            if (res === undefined || res === null)
+              col.insertOne({id: message.author.id, count: 1});
+            else
+              col.updateOne({id: message.author.id},{$set: {id: message.author.id, count: res.count += 1}});
+          });
+        }
       });
     })
 

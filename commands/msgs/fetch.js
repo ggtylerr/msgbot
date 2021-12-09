@@ -46,11 +46,20 @@ class FetchCommand extends Command {
       // Get/Create Collection
       const dbo = db.db("msgs");
       const col = dbo.collection(message.guildId);
-      // Get before date
+      // Get after date
       const s = await col.findOne({id:"settings"});
-      let before = message.guild.joinedTimestamp;
+      let after = message.guild.joinedTimestamp;
       if (s !== null) {
-        before = s.settings.after.val;
+        if (s.settings.after.val !== "") {
+          after = parseInt(s.settings.after.val);
+        }
+      }
+      // Get before date
+      let before = 999999999999999999999; // Sep 27 33658 1:46:40 GMT
+      if (s !== null) {
+        if (s.settings.before.val !== "") {
+          before = parseInt(s.settings.before.val);
+        }
       }
       // Fetch messages
       let msgs = [];
@@ -63,7 +72,8 @@ class FetchCommand extends Command {
           // Filter through messages and add them
           const filtered = messages.filter((msg) => {
             return !msg.author.bot &&
-              msg.createdTimestamp > before;
+              before > (msg.createdTimestamp/1000) &&
+              (msg.createdTimestamp/1000) > after;
           })
           size += filtered.size;
           filtered.each(message => {

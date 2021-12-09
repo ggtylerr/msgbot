@@ -27,6 +27,10 @@ const strip = require('common-tags').stripIndents;
 const { MongoClient } = require('mongodb');
 
 const defaultSettings = {
+  before: {
+    val: "",
+    type: "timestamp"
+  },
   after: {
     val: "",
     type: "timestamp"
@@ -58,7 +62,12 @@ class ConfigCommand extends Command {
       const embed = new MessageEmbed()
         .setTitle("Configuration Options")
         .setDescription(
-          strip`After date: 
+          strip`Before date: 
+          \`before (UNIX timestamp)\`
+          Looks for messages before that timestamp.
+          [Generate the timestamp here](https://www.unixtimestamp.com/)
+          
+          After date: 
           \`after (UNIX timestamp)\`
           Looks for messages after that timestamp.
           [Generate the timestamp here](https://www.unixtimestamp.com/)`
@@ -87,6 +96,10 @@ class ConfigCommand extends Command {
           await db.close();
           return;
         }
+        // Add setting if it isn't added
+        if (res.settings[key] === undefined) {
+          res.settings[key] = defaultSettings[key];
+        }
         // Display value if none specified
         if (val === null) {
           let value = res.settings[key].val;
@@ -106,7 +119,7 @@ class ConfigCommand extends Command {
         updated.$set.settings[key].val = val;
         col.updateOne({id: "settings"}, updated, (err) => {
           if (err) throw err;
-          message.channel.send(`The setting ${key} has successfully been updated to ${val}!`);
+          message.channel.send(`The setting ${key} has successfully been updated to ${val}! Make sure to re-fetch messages by running \`fetch\``);
           db.close();
         });
       });

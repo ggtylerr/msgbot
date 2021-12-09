@@ -43,12 +43,12 @@ class LeaderboardCommand extends Command {
       dbo.collection(message.guildId).find().sort({count: -1}).toArray(async (err,res) => {
         if (err) throw err;
         if (res === undefined) return message.channel.send("No messages sent in the server yet!");
-        if (res[0].id === "settings") res.shift();
+        const list = res.filter(obj => obj.id !== "settings");
 
         let out = "";
-        for (let i = 0; i < res.length && i < 10; i++) {
-          const user = await client.users.fetch(res[i].id);
-          out += `#${i+1} - ${user.username} \`(${res[i].count})\`\n`;
+        for (let i = 0; i < list.length && i < 10; i++) {
+          const user = await client.users.fetch(list[i].id);
+          out += `#${i+1} - ${user.username} \`(${list[i].count})\`\n`;
         }
 
         const embed = new MessageEmbed()

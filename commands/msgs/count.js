@@ -25,6 +25,7 @@
 const { Command } = require('@sapphire/framework');
 const { MessageEmbed } = require('discord.js');
 const { MongoClient } = require('mongodb');
+const one = require('common-tags').oneLine;
 
 class CountCommand extends Command {
   constructor(context, options) {
@@ -51,9 +52,19 @@ class CountCommand extends Command {
       dbo.collection(message.guildId).findOne({id: user.id},(err,res) => {
         if (err) throw err;
         if ((res === undefined || res === null) && user.id === message.author.id)
-          return message.channel.send(`Looks like I haven't counted any of your messages yet. Wait a bit and/or send more messages, then try again.`);
+          return message.channel.send(one`
+            Looks like I haven't counted any of your messages yet.
+            Wait a bit and/or send more messages, then try again.
+            If that doesn't work, the server might be configured to
+            track messages before a date and time that's already passed.
+          `);
         if (res === undefined || res === null)
-          return message.channel.send(`Looks like they haven't sent any messages yet. If they have, wait a bit, then try again.`);
+          return message.channel.send(one`
+            Looks like they haven't sent any messages yet.
+            If they have, wait a bit, then try again.
+            If that doesn't work, the server might be configured to
+            track messages before a date and time that's already passed.
+          `);
         const embed = new MessageEmbed()
           .setTitle(`Messages sent by ${user.username}`)
           .setDescription(`${res.count}`)
